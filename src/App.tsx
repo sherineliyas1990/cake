@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { 
   Cake, 
   Sparkles, 
-  Heart, 
   Star, 
   Phone, 
   MapPin, 
@@ -10,15 +9,11 @@ import {
   ChevronRight, 
   Send, 
   CheckCircle2, 
-  Calendar, 
-  Users, 
   Award, 
-  MessageSquare,
   X,
   Instagram,
   Facebook,
-  Mail,
-  Utensils
+  Mail
 } from 'lucide-react';
 
 interface GalleryItem {
@@ -35,7 +30,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'all' | 'wedding' | 'chocolate' | 'fruity' | 'pastry'>('all');
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
   
-  // AI Cake Designer State
+  // AI Cake Designer State (Client-Side Interactive Generator)
   const [aiOccasion, setAiOccasion] = useState('Wedding Celebration');
   const [aiFlavor, setAiFlavor] = useState('Vanilla Bean & White Chocolate Raspberry');
   const [aiSize, setAiSize] = useState('3-Tier (80-100 servings)');
@@ -113,7 +108,7 @@ export default function App() {
       title: 'Signature Sunlit Bakery Tier',
       category: 'wedding',
       image: '/src/assets/images/hero_bakery_showcase_1795689661782.jpg',
-      description: 'Our signature signature showcase creation with soft buttercream textures and fresh seasonal floral arrangements.',
+      description: 'Our signature showcase creation with soft buttercream textures and fresh seasonal floral arrangements.',
       price: '$380',
       tag: 'Award Winning'
     }
@@ -123,46 +118,40 @@ export default function App() {
     ? galleryItems 
     : galleryItems.filter(item => item.category === activeTab);
 
-  const handleAiGenerate = async (e: React.FormEvent) => {
+  const handleAiGenerate = (e: React.FormEvent) => {
     e.preventDefault();
     setAiLoading(true);
-    setAiResult(null);
 
-    try {
-      const res = await fetch('/api/generate-cake', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          occasion: aiOccasion,
-          flavor: aiFlavor,
-          size: aiSize,
-          theme: aiTheme,
-          dietary: aiDietary
-        })
-      });
+    setTimeout(() => {
+      // Generate intelligent blueprint based on user selections
+      const nameMap: Record<string, string> = {
+        'Wedding Celebration': 'The Royal Botanical Ivory Tier',
+        'Birthday Milestone': 'The Celebration Confetti Drip',
+        'Anniversary': 'The Golden Romance Velvet Cake',
+        'Baby Shower': 'The Pastel Whisper Chiffon',
+        'Corporate Gala': 'The Grand Patisserie Noir'
+      };
 
-      if (!res.ok) throw new Error('Failed to generate concept');
-      const data = await res.json();
-      setAiResult(data);
-    } catch (err) {
-      console.error(err);
-      // Fallback response if offline or error
+      const cakeName = nameMap[aiOccasion] || 'The Signature Custom Creation';
+      
       setAiResult({
-        cakeName: 'The Royal Botanical Dream',
-        description: 'A magnificent creation combining moist vanilla bean layers with raspberry coulis and velvety Swiss meringue buttercream.',
-        recommendedLayers: ['Sponge: Tahitian Vanilla Bean Chiffon', 'Filling: Raspberry Rose Compote & White Chocolate Ganache', 'Exterior: Silk Buttercream with Edible Gold Dust'],
-        bakingTips: 'Crafted with European cultured butter and organic free-range eggs for an exceptionally tender crumb.',
-        estimatedPrice: '$160 - $210'
+        cakeName,
+        description: `A custom ${aiSize.toLowerCase()} designed for your ${aiOccasion.toLowerCase()}. Features ${aiFlavor.toLowerCase()} with ${aiTheme.toLowerCase()}, prepared with ${aiDietary.toLowerCase()}.`,
+        recommendedLayers: [
+          `Sponge: Organic ${aiFlavor.split('&')[0].trim()} Sponge`,
+          `Filling: Artisan ${aiFlavor.includes('Raspberry') ? 'Raspberry Rose Compote' : aiFlavor.includes('Chocolate') ? 'Belgian Ganache' : 'Vanilla Mascarpone Cream'}`,
+          `Exterior Finish: ${aiTheme}`
+        ],
+        bakingTips: `Crafted with European cultured butter and organic free-range eggs. Designed to serve your guests with exquisite balance of sweetness and texture.`,
+        estimatedPrice: aiSize.includes('3-Tier') ? '$380 - $480' : aiSize.includes('2-Tier') ? '$220 - $290' : '$130 - $180'
       });
-    } finally {
       setAiLoading(false);
-    }
+    }, 600);
   };
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setFormSubmitted(true);
-    // Scroll to success banner
   };
 
   return (
@@ -181,7 +170,7 @@ export default function App() {
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[#5c524f]">
           <a href="#gallery" className="hover:text-[#9c6644] transition-colors whitespace-nowrap shrink-0">Gallery</a>
           <a href="#ai-studio" className="hover:text-[#9c6644] transition-colors whitespace-nowrap shrink-0 flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5 text-[#b08968]" /> AI Cake Studio
+            <Sparkles className="w-3.5 h-3.5 text-[#b08968]" /> Cake Concept Studio
           </a>
           <a href="#menu" className="hover:text-[#9c6644] transition-colors whitespace-nowrap shrink-0">Menu & Pricing</a>
           <a href="#about" className="hover:text-[#9c6644] transition-colors whitespace-nowrap shrink-0">Our Story</a>
@@ -203,7 +192,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-7 space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#e3d5ca]/60 border border-[#d4c5b9] text-xs font-semibold text-[#7f5539]">
-              <Sparkles className="w-3.5 h-3.5" /> Artisan Bakery & Custom Cake Studio
+              <Sparkles className="w-3.5 h-3.5" /> Static GitHub Pages Ready · Artisan Bakery & Custom Cake Studio
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-[#2b2625] leading-[1.1] text-wrap balance">
@@ -225,7 +214,7 @@ export default function App() {
                 href="#ai-studio" 
                 className="px-7 py-3.5 text-sm font-semibold text-[#7f5539] bg-white border border-[#d4c5b9] rounded-full hover:bg-[#faf6f0] transition-all flex items-center gap-2 shadow-sm whitespace-nowrap"
               >
-                <Sparkles className="w-4 h-4 text-[#b08968]" /> Try AI Cake Designer
+                <Sparkles className="w-4 h-4 text-[#b08968]" /> Cake Concept Studio
               </a>
             </div>
 
@@ -261,7 +250,6 @@ export default function App() {
               </div>
             </div>
             
-            {/* Floating badge */}
             <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-xl border border-[#e6dfd5] flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-[#f5ede3] flex items-center justify-center text-[#9c6644]">
                 <Award className="w-5 h-5" />
@@ -288,7 +276,6 @@ export default function App() {
             </p>
           </div>
 
-          {/* Interactive Filter Tabs (Functional Buttons) */}
           <div className="flex flex-wrap items-center justify-center gap-2">
             {[
               { id: 'all', label: 'All Creations' },
@@ -311,7 +298,6 @@ export default function App() {
             ))}
           </div>
 
-          {/* Gallery Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredGallery.map(item => (
               <div 
@@ -340,7 +326,6 @@ export default function App() {
 
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                   <div className="space-y-2">
-                    {/* Unboxed Metadata */}
                     <div className="flex items-center gap-2 text-xs text-[#8d7b73]">
                       <span className="capitalize">{item.category}</span>
                       <span aria-hidden="true">·</span>
@@ -367,23 +352,22 @@ export default function App() {
         </div>
       </section>
 
-      {/* AI CUSTOM CAKE DESIGNER */}
+      {/* AI CUSTOM CAKE DESIGNER (Client-Side Instant Generator for Static Hosting) */}
       <section id="ai-studio" className="py-24 px-6 lg:px-12 bg-gradient-to-b from-[#fcfbfa] to-[#f5ede3]/70 border-t border-b border-[#e6dfd5]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center space-y-3 max-w-2xl mx-auto">
             <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#9c6644]/10 text-[#9c6644] text-xs font-bold uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5" /> Powered by Gemini AI
+              <Sparkles className="w-3.5 h-3.5" /> Interactive Concept Studio
             </div>
             <h2 className="text-3xl sm:text-4xl font-display font-bold text-[#2b2625]">
-              AI Custom Cake Designer
+              Custom Cake Concept Designer
             </h2>
             <p className="text-[#6b5e59]">
-              Not sure what flavor or design to choose? Tell us your vision, and our master pastry chef AI will instantly generate a custom cake concept and flavor blueprint for you.
+              Select your preferences below to instantly generate a master pastry chef custom cake blueprint and recipe recommendation, 100% optimized for static hosting.
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Input Form */}
             <div className="lg:col-span-6 bg-white p-8 rounded-2xl shadow-md border border-[#e6dfd5] space-y-6">
               <h3 className="text-xl font-display font-semibold text-[#2b2625]">Design Your Dream Cake</h3>
 
@@ -465,20 +449,19 @@ export default function App() {
                   {aiLoading ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Generating Concept...
+                      Generating Blueprint...
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-4 h-4" /> Generate AI Cake Blueprint
+                      <Sparkles className="w-4 h-4" /> Generate Custom Cake Blueprint
                     </>
                   )}
                 </button>
               </form>
             </div>
 
-            {/* Output Display */}
             <div className="lg:col-span-6 bg-white p-8 rounded-2xl shadow-md border border-[#e6dfd5] space-y-6">
-              <h3 className="text-xl font-display font-semibold text-[#2b2625]">AI Master Pastry Concept</h3>
+              <h3 className="text-xl font-display font-semibold text-[#2b2625]">Master Pastry Concept</h3>
 
               {aiResult ? (
                 <div className="space-y-6 animate-fadeIn">
@@ -511,7 +494,7 @@ export default function App() {
                   <a 
                     href="#contact" 
                     onClick={() => {
-                      setFormData(prev => ({ ...prev, message: `I would like to order the AI generated cake: ${aiResult.cakeName} (${aiResult.estimatedPrice}).` }));
+                      setFormData(prev => ({ ...prev, message: `I would like to order the custom cake concept: ${aiResult.cakeName} (${aiResult.estimatedPrice}).` }));
                     }}
                     className="w-full py-3.5 text-sm font-semibold text-white bg-[#2b2625] rounded-xl hover:bg-[#433835] transition-all shadow-md flex items-center justify-center gap-2"
                   >
@@ -626,7 +609,7 @@ export default function App() {
                 date: 'October 2025'
               },
               {
-                quote: 'The AI cake designer gave us an amazing concept for my daughter’s 10th birthday. The result exceeded every expectation—moist, decadent, and stunningly decorated!',
+                quote: 'The custom cake designer gave us an amazing concept for my daughter’s 10th birthday. The result exceeded every expectation—moist, decadent, and stunningly decorated!',
                 name: 'Dr. Sophia Reynolds',
                 role: 'Birthday Host',
                 date: 'January 2026'
@@ -864,7 +847,7 @@ export default function App() {
             <p className="text-xs font-bold uppercase tracking-widest text-white mb-4">Quick Navigation</p>
             <ul className="space-y-2 text-xs text-[#b8a494]">
               <li><a href="#gallery" className="hover:text-white transition-colors">Gallery of Best Creations</a></li>
-              <li><a href="#ai-studio" className="hover:text-white transition-colors">AI Cake Designer</a></li>
+              <li><a href="#ai-studio" className="hover:text-white transition-colors">Cake Concept Studio</a></li>
               <li><a href="#menu" className="hover:text-white transition-colors">Menu & Pricing</a></li>
               <li><a href="#reviews" className="hover:text-white transition-colors">Customer Reviews</a></li>
             </ul>
