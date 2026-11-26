@@ -1,0 +1,6 @@
+{
+  "name": "Sweet Delights Artisan Bakery & Custom Cake Studio",
+  "description": "An artisanal cake shop website featuring an interactive gallery of best creations, menu & pricing guide, customer reviews, contact & custom order inquiries, and an AI Custom Cake Designer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
